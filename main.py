@@ -1,5 +1,6 @@
 import random
-from fastapi import FastAPI
+from typing import Optional
+from fastapi import FastAPI, Cookie, Response
 from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -10,24 +11,34 @@ def get_spec():
     with open("SPEC.md", "r") as f:
         return f.read()
 
-secret_number = random.randint(1, 100)
-guess_count = 0
-
 @app.get("/guess")
-def guess(n: int):
-    global guess_count
-    guess_count = guess_count + 1
-    if n < secret_number:
-        return {"result": "higher", "count": guess_count}
-    if n > secret_number:
-        return {"result": "lower", "count": guess_count}
-    return {"result": "correct", "count": guess_count}
+def guess(
+    n: int,
+    response: Response,
+    secret: Optional[int] = Cookie(None),
+    count: Optional[int] = Cookie(None),
+):
+    if secret is None:
+        secret = random.randint(1, 100)
+        count = 0
+    count = (count or 0) + 1
+
+    if n < secret:
+        result = "higher"
+    elif n > secret:
+        result = "lower"
+    else:
+        result = "correct"
+
+    response.set_cookie("secret", str(secret))
+    response.set_cookie("count", str(count))
+    return {"result": result, "count": count}
 
 @app.post("/new_game")
-def new_game():
-    global secret_number, guess_count
-    secret_number = random.randint(1, 100)
-    guess_count = 0
+def new_game(response: Response):
+    new_secret = random.randint(1, 100)
+    response.set_cookie("secret", str(new_secret))
+    response.set_cookie("count", "0")
     return {"message": "new number picked"}
 
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
