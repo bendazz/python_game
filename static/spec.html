@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Number Guessing Game — Student Spec</title>
+    <link rel="stylesheet" href="spec.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <nav>
+        <a href="/">&larr; Back to the game</a>
+    </nav>
+    <div id="content">Loading spec...</div>
+    <script>
+        fetch("/spec")
+            .then(function (r) { return r.text(); })
+            .then(function (md) {
+                document.getElementById("content").innerHTML = marked.parse(md);
+            });
+    </script>
+</body>
+</html>

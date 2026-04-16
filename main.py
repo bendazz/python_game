@@ -1,37 +1,33 @@
+import random
+from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI   
 
 app = FastAPI()
 
-board = ["", "", "", "", "", "", "", "", ""]
-current_player = "X"
+@app.get("/spec", response_class=PlainTextResponse)
+def get_spec():
+    with open("SPEC.md", "r") as f:
+        return f.read()
 
-@app.get("/board")
-def get_board():
-    return board
+secret_number = random.randint(1, 100)
+guess_count = 0
 
-@app.get("/current_player")
-def get_current_player():
-    return current_player
+@app.get("/guess")
+def guess(n: int):
+    global guess_count
+    guess_count = guess_count + 1
+    if n < secret_number:
+        return {"result": "higher", "count": guess_count}
+    if n > secret_number:
+        return {"result": "lower", "count": guess_count}
+    return {"result": "correct", "count": guess_count}
 
-@app.post("/move")
-def make_move(position: int):
-    global current_player
-    if board[position] != "":
-        return {"error": "Cell already taken"}
-    board[position] = current_player
-    if current_player == "X":
-        current_player = "O"
-    else:
-        current_player = "X"
-    return board
-
-@app.post("/reset")
-def reset():
-    global current_player
-    for i in range(len(board)):
-        board[i] = ""
-    current_player = "X"
-    return board
+@app.post("/new_game")
+def new_game():
+    global secret_number, guess_count
+    secret_number = random.randint(1, 100)
+    guess_count = 0
+    return {"message": "new number picked"}
 
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

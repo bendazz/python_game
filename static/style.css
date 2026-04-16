@@ -1,23 +1,121 @@
 body {
     text-align: center;
     font-family: Arial, sans-serif;
+    margin-top: 50px;
 }
 
-#board {
-    display: grid;
-    grid-template-columns: 100px 100px 100px;
-    gap: 5px;
-    justify-content: center;
-    margin-top: 20px;
+nav {
+    text-align: right;
+    padding: 0 30px;
+    margin-top: -40px;
+    margin-bottom: 20px;
 }
 
-.cell {
-    width: 100px;
-    height: 100px;
-    border: 2px solid black;
-    font-size: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+nav a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+input, button {
+    font-size: 18px;
+    padding: 8px;
+    margin: 5px;
+}
+
+#counter {
+    font-size: 16px;
+    color: #555;
+    margin-top: 15px;
+}
+
+#message {
+    font-size: 24px;
+    margin-top: 10px;
+    font-weight: bold;
+    min-height: 1.2em;
+}
+
+#message.higher {
+    color: #e74c3c;
+}
+
+#message.lower {
+    color: #3498db;
+}
+
+#message.correct {
+    color: #2ecc71;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#numberline {
+    position: relative;
+    width: 80%;
+    max-width: 700px;
+    height: 80px;
+    margin: 60px auto;
+}
+
+#track {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+}
+
+.tick {
+    position: absolute;
+    top: 36px;
+    width: 2px;
+    height: 12px;
+    background: #333;
+    transform: translateX(-1px);
+}
+
+.tick span {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #555;
+}
+
+.guess-dot {
+    position: absolute;
+    top: 32px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4a90e2;
+    color: white;
+    font-size: 11px;
+    line-height: 20px;
+    text-align: center;
+    transform: translateX(-10px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.guess-dot.higher {
+    background: #e74c3c;
+}
+
+.guess-dot.lower {
+    background: #3498db;
+}
+
+.guess-dot.correct {
+    background: #2ecc71;
 }

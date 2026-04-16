@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tic Tac Toe</title>
+    <title>Number Guessing Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Tic Tac Toe</h1>
-    <p id="turn"></p>
-    <div id="board"></div>
-    <p id="message"></p>
+    <nav><a href="/spec.html">View Instructions &amp; Spec</a></nav>
+    <h1>Guess a Number (1-100)</h1>
+    <input type="number" id="guess" min="1" max="100">
+    <button id="guess-btn" onclick="submitGuess()">Guess</button>
     <button onclick="resetGame()">New Game</button>
+    <p id="counter">Guesses: 0</p>
+    <p id="message"></p>
+
+    <div id="numberline">
+        <div id="track"></div>
+        <div class="tick" style="left: 0%"><span>1</span></div>
+        <div class="tick" style="left: 25%"><span>25</span></div>
+        <div class="tick" style="left: 50%"><span>50</span></div>
+        <div class="tick" style="left: 75%"><span>75</span></div>
+        <div class="tick" style="left: 100%"><span>100</span></div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
