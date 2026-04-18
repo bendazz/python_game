@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grid Walker</title>
+<style>
+  body { font-family: system-ui, sans-serif; text-align: center; padding: 2rem; }
+  h1 { margin-bottom: 1rem; }
+  #grid { display: inline-block; border: 2px solid #333; margin: 1rem; }
+  .row { display: flex; }
+  .cell {
+    width: 40px; height: 40px;
+    border: 1px solid #ccc;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cell.on::after {
+    content: "";
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #d33;
+  }
+  button {
+    font-size: 1rem; padding: 0.5rem 1rem; margin: 0.25rem;
+    cursor: pointer;
+  }
+  #status { margin-top: 1rem; color: #555; }
+  .spec-link { display: block; margin-top: 2rem; color: #4a90e2; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+  <h1>Grid Walker</h1>
+  <div id="grid"></div>
+  <div>
+    <button id="step">Step</button>
+    <button id="animate">Animate</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+  </div>
+  <div id="status">row: 0, col: 0</div>
+  <a class="spec-link" href="/spec.html">Read the spec &rarr;</a>
+
+<script>
+const gridEl = document.getElementById("grid");
+const statusEl = document.getElementById("status");
+let timer = null;
+
+function render(state) {
+  gridEl.innerHTML = "";
+  for (let r = 0; r < state.grid.length; r++) {
+    const rowEl = document.createElement("div");
+    rowEl.className = "row";
+    for (let c = 0; c < state.grid[r].length; c++) {
+      const cellEl = document.createElement("div");
+      cellEl.className = "cell" + (state.grid[r][c] === 1 ? " on" : "");
+      rowEl.appendChild(cellEl);
+    }
+    gridEl.appendChild(rowEl);
+  }
+  statusEl.textContent = `row: ${state.row}, col: ${state.col}`;
+}
+
+async function load() {
+  const res = await fetch("/state");
+  render(await res.json());
+}
+
+async function step() {
+  const res = await fetch("/step", { method: "POST" });
+  render(await res.json());
+}
+
+async function reset() {
+  const res = await fetch("/reset", { method: "POST" });
+  render(await res.json());
+}
+
+document.getElementById("step").onclick = step;
+document.getElementById("animate").onclick = () => {
+  if (timer) return;
+  timer = setInterval(step, 200);
+};
+document.getElementById("stop").onclick = () => {
+  clearInterval(timer);
+  timer = null;
+};
+document.getElementById("reset").onclick = () => {
+  clearInterval(timer);
+  timer = null;
+  reset();
+};
+
+load();
+</script>
+</body>
+</html>
